@@ -5,18 +5,6 @@
 
 #include "libconf.h"
 
-static void
-eat_spacetab(struct conf_ctx *ctx)
-{
-	while (true) {
-		char c = ctx->buf[ctx->buf_index];
-		if (c == ' ' || c == '\t')
-			ctx->buf_index++;
-		else
-			break;
-	}
-}
-
 void
 conf_init(struct conf_ctx *ctx)
 {
@@ -69,18 +57,14 @@ conf_accept(struct conf_ctx *ctx, const char *s)
 size_t
 conf_string(struct conf_ctx *ctx, char *buf, size_t size)
 {
-	puts("ENTER conf_string()");
-	eat_spacetab(ctx);
 	size_t index = ctx->buf_index;
 	while (true) {
 		char c = ctx->buf[index];
-		printf("[conf_string] '%c'\n", c);
 		if (c != ' ' && c != '\t' && c != '\n')
 			index++;
 		else
 			break;
 	}
-	puts("EXIT conf_string()");
 	size_t diff = index - ctx->buf_index;
 	ctx->buf_index = index;
 	return diff;

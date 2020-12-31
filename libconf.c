@@ -17,7 +17,7 @@ conf_parse(struct conf_ctx *ctx, conf_parser_t func, FILE *fp, void *arg)
 	if (setjmp(ctx->jump) > 0)
 		return false;
 	ctx->file = fp;
-	fread(ctx->buf, sizeof(char), sizeof(ctx->buf), fp);
+	ctx->buf_size = fread(ctx->buf, sizeof(char), sizeof(ctx->buf), fp);
 	ctx->buf_index = 0;
 	func(ctx, arg);
 }
@@ -25,7 +25,7 @@ conf_parse(struct conf_ctx *ctx, conf_parser_t func, FILE *fp, void *arg)
 bool
 conf_eof(struct conf_ctx *ctx)
 {
-	return feof(ctx->file) && ctx->buf_index == (sizeof(ctx->buf)-1);
+	return feof(ctx->file) && ctx->buf_index == ctx->buf_size;
 }
 
 bool

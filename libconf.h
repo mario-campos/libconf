@@ -15,6 +15,7 @@ struct conf_ctx {
 	FILE *file;
 	char buf[1024];
 	size_t buf_index;
+	size_t buf_size;
 };
 
 typedef void (*conf_parser_t)(struct conf_ctx *ctx, void *arg);

@@ -43,8 +43,7 @@ conf_eof(struct conf_ctx *ctx)
 bool
 conf_next(struct conf_ctx *ctx, const char *s)
 {
-	eat_spacetab(ctx);
-	return !strncmp(s, &ctx->buf[ctx->buf_index], strlen(s));
+	return !strncmp(&ctx->buf[ctx->buf_index], s, strlen(s));
 }
 
 size_t
@@ -60,7 +59,11 @@ conf_expect(struct conf_ctx *ctx, const char *s)
 size_t
 conf_accept(struct conf_ctx *ctx, const char *s)
 {
-	return !strncmp(&ctx->buf[ctx->buf_index], s, strlen(s)) * strlen(s);
+	if (strncmp(&ctx->buf[ctx->buf_index], s, strlen(s)))
+		return 0;
+
+	ctx->buf_index += strlen(s);
+	return strlen(s);
 }
 
 size_t

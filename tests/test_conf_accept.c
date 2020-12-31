@@ -29,9 +29,24 @@ ATF_TC_BODY(tc1, tc)
 	conf_parse(&ctx, tc1_parser, fp, NULL);
 }
 
+void tc2_parser(struct conf_ctx *ctx, void *arg)
+{
+	conf_accept(ctx, "abc");
+	ATF_CHECK_EQ(ctx->buf_index, 3);
+}
+
+ATF_TC_WITHOUT_HEAD(tc2);
+ATF_TC_BODY(tc2, tc)
+{
+	struct conf_ctx ctx;
+	FILE *fp = fmemopen(STR_SIZE("abc"), "r");
+	conf_parse(&ctx, tc2_parser, fp, NULL);
+}
+
 ATF_TP_ADD_TCS(tp)
 {
 	ATF_TP_ADD_TC(tp, tc0);
 	ATF_TP_ADD_TC(tp, tc1);
+	ATF_TP_ADD_TC(tp, tc2);
 	return atf_no_error();
 }

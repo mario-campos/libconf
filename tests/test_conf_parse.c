@@ -3,7 +3,7 @@
 
 #define STR_SIZE(x) (x),(sizeof(x)-1)
 
-void tc0_parser(struct conf_ctx *ctx, void *arg)
+void tc0_parser(struct conf_state *cst, void *arg)
 {
 	return;
 }
@@ -11,23 +11,23 @@ void tc0_parser(struct conf_ctx *ctx, void *arg)
 ATF_TC_WITHOUT_HEAD(tc0);
 ATF_TC_BODY(tc0, tc)
 {
-	struct conf_ctx ctx;
+	struct conf_state cst;
 	FILE *fp = fmemopen(STR_SIZE(""), "r");
-	ATF_CHECK(conf_parse(&ctx, tc0_parser, fp, NULL));
+	ATF_CHECK(conf_parse(&cst, tc0_parser, fp, NULL));
 }
 
-void tc1_parser(struct conf_ctx *ctx, void *arg)
+void tc1_parser(struct conf_state *cst, void *arg)
 {
-	conf_error(ctx, -1, "oh no");
+	conf_error(cst, -1, "oh no");
 	ATF_CHECK(false);
 }
 
 ATF_TC_WITHOUT_HEAD(tc1);
 ATF_TC_BODY(tc1, tc)
 {
-	struct conf_ctx ctx;
+	struct conf_state cst;
 	FILE *fp = fmemopen(STR_SIZE("foo"), "r");
-	ATF_CHECK(!conf_parse(&ctx, tc1_parser, fp, NULL));
+	ATF_CHECK(!conf_parse(&cst, tc1_parser, fp, NULL));
 }
 
 ATF_TP_ADD_TCS(tp)

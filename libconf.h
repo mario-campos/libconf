@@ -10,7 +10,7 @@
 #define LIBCONF_ERR_UNEXPECTED_TOKEN 	0x0002
 #define LIBCONF_ERR_READ		0x0003
 
-struct conf_ctx {
+struct conf_state {
 	jmp_buf jump;
 	FILE *file;
 	char buf[1024];
@@ -20,14 +20,14 @@ struct conf_ctx {
 	const char *err_text;
 };
 
-void conf_init(struct conf_ctx *);
-bool conf_parse(struct conf_ctx *, void (*)(struct conf_ctx *, void *), FILE *, void *);
+void conf_init(struct conf_state *);
+bool conf_parse(struct conf_state *, void (*)(struct conf_state *, void *), FILE *, void *);
 
-bool conf_eof(struct conf_ctx *);
-bool conf_next(struct conf_ctx *, const char *);
-void conf_error(struct conf_ctx *, int, const char *);
-size_t conf_expect(struct conf_ctx *, const char *);
-size_t conf_accept(struct conf_ctx *, const char *);
-size_t conf_string(struct conf_ctx *, char *, size_t);
+bool conf_eof(struct conf_state *);
+bool conf_next(struct conf_state *, const char *);
+void conf_error(struct conf_state *, int, const char *);
+size_t conf_expect(struct conf_state *, const char *);
+size_t conf_accept(struct conf_state *, const char *);
+size_t conf_string(struct conf_state *, char *, size_t);
 
 #endif /* LIBCONF_H */

@@ -6,86 +6,86 @@
 #include "libconf.h"
 
 void
-conf_init(struct conf_ctx *ctx)
+conf_init(struct conf_state *cst)
 {
 
 }
 
 bool
-conf_parse(struct conf_ctx *ctx, void (*func)(struct conf_ctx *, void *), FILE *fp, void *arg)
+conf_parse(struct conf_state *cst, void (*func)(struct conf_state *, void *), FILE *fp, void *arg)
 {
-	if (setjmp(ctx->jump) > 0)
+	if (setjmp(cst->jump) > 0)
 		return false;
-	ctx->file = fp;
-	ctx->buf_size = fread(ctx->buf, sizeof(char), sizeof(ctx->buf), fp);
-	ctx->buf_index = 0;
-	func(ctx, arg);
+	cst->file = fp;
+	cst->buf_size = fread(cst->buf, sizeof(char), sizeof(cst->buf), fp);
+	cst->buf_index = 0;
+	func(cst, arg);
 	return true;
 }
 
 void
-conf_error(struct conf_ctx *ctx, int error_code, const char *message)
+conf_error(struct conf_state *cst, int error_code, const char *message)
 {
-	ctx->err_code = error_code;
-	ctx->err_text = message;
-	longjmp(ctx->jump, 1);
+	cst->err_code = error_code;
+	cst->err_text = message;
+	longjmp(cst->jump, 1);
 }
 
 bool
-conf_eof(struct conf_ctx *ctx)
+conf_eof(struct conf_state *cst)
 {
-	return feof(ctx->file) && ctx->buf_index == ctx->buf_size;
+	return feof(cst->file) && cst->buf_index == cst->buf_size;
 }
 
 bool
-conf_next(struct conf_ctx *ctx, const char *s)
+conf_next(struct conf_state *cst, const char *s)
 {
-	return !strncmp(&ctx->buf[ctx->buf_index], s, strlen(s));
+	return !strncmp(&cst->buf[cst->buf_index], s, strlen(s));
 }
 
 size_t
-conf_expect(struct conf_ctx *ctx, const char *s)
+conf_expect(struct conf_state *cst, const char *s)
 {
-	if (strncmp(&ctx->buf[ctx->buf_index], s, strlen(s)))
-		longjmp(ctx->jump, 1);
+	if (strncmp(&cst->buf[cst->buf_index], s, strlen(s)))
+		longjmp(cst->jump, 1);
 
-	ctx->buf_index += strlen(s);
+	cst->buf_index += strlen(s);
 	return strlen(s);
 }
 
 size_t
-conf_accept(struct conf_ctx *ctx, const char *s)
+conf_accept(struct conf_state *cst, const char *s)
 {
-	if (strncmp(&ctx->buf[ctx->buf_index], s, strlen(s)))
+	if (strncmp(&cst->buf[cst->buf_index], s, strlen(s)))
 		return 0;
 
-	ctx->buf_index += strlen(s);
+	cst->buf_index += strlen(s);
 	return strlen(s);
 }
 
 size_t
-conf_string(struct conf_ctx *ctx, char *buf, size_t size)
+conf_string(struct conf_state *cst, char *buf, size_t size)
 {
 	// 1. determine the range of bytes to copy
 	size_t n = 0;
 	while (true) {
-		if ((ctx->buf_index + n) >= ctx->buf_size)
+		if ((cst->buf_index + n) >= cst->buf_size)
 			break;
 		if ((n+1) == size)
 			break;
-		if (ctx->buf[ctx->buf_index + n] == ' ' || ctx->buf[ctx->buf_index + n] == '\t' || ctx->buf[ctx->buf_index + n] == '\n')
+		if (cst->buf[cst->buf_index + n] == ' ' || cst->buf[cst->buf_index + n] == '\t' || cst->buf[cst->buf_index + n] == '\n')
 			break;
 		n++;
 	}
 
 	// 2. copy those bytes
-	memcpy(buf, &ctx->buf[ctx->buf_index], n);
+	memcpy(buf, &cst->buf[cst->buf_index], n);
 
 	// 3. set null terminator
 	buf[n] = '\0';
 
 	// 4. update internal pointer
-	ctx->buf_index += n;
+	cst->buf_index += n;
 
 	return n;
 }

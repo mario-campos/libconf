@@ -32,7 +32,7 @@ ATF_TC_BODY(tc1, tc)
 void tc2_parser(struct conf_ctx *ctx, void *arg)
 {
 	conf_accept(ctx, "abc");
-	ATF_CHECK_EQ(ctx->buf_index, 3);
+	ATF_CHECK_EQ(conf_accept(ctx, "abc"), 0);
 }
 
 ATF_TC_WITHOUT_HEAD(tc2);

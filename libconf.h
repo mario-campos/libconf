@@ -16,6 +16,8 @@ struct conf_ctx {
 	char buf[1024];
 	size_t buf_index;
 	size_t buf_size;
+	int err_code;
+	const char *err_text;
 };
 
 typedef void (*conf_parser_t)(struct conf_ctx *ctx, void *arg);
@@ -25,6 +27,7 @@ bool conf_parse(struct conf_ctx *, conf_parser_t, FILE *, void *);
 
 bool conf_eof(struct conf_ctx *);
 bool conf_next(struct conf_ctx *, const char *);
+void conf_error(struct conf_ctx *, int, const char *);
 size_t conf_expect(struct conf_ctx *, const char *);
 size_t conf_accept(struct conf_ctx *, const char *);
 size_t conf_string(struct conf_ctx *, char *, size_t);

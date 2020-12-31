@@ -18,7 +18,8 @@ ATF_TC_BODY(tc0, tc)
 
 void tc1_parser(struct conf_ctx *ctx, void *arg)
 {
-	conf_expect(ctx, "bar");
+	conf_error(ctx, -1, "oh no");
+	ATF_CHECK(false);
 }
 
 ATF_TC_WITHOUT_HEAD(tc1);

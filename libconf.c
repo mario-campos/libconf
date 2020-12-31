@@ -23,6 +23,14 @@ conf_parse(struct conf_ctx *ctx, conf_parser_t func, FILE *fp, void *arg)
 	return true;
 }
 
+void
+conf_error(struct conf_ctx *ctx, int error_code, const char *message)
+{
+	ctx->err_code = error_code;
+	ctx->err_text = message;
+	longjmp(ctx->jump, 1);
+}
+
 bool
 conf_eof(struct conf_ctx *ctx)
 {

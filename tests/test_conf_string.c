@@ -42,11 +42,26 @@ ATF_TC_BODY(tc3, tc)
 	conf_parse(&ctx, tc0_parser, fp, NULL);
 }
 
+void tc4_parser(struct conf_ctx *ctx, void *arg)
+{
+	char buf[10];	
+	ATF_CHECK_EQ(conf_string(ctx, buf, sizeof(buf)), 9);
+}
+
+ATF_TC_WITHOUT_HEAD(tc4);
+ATF_TC_BODY(tc4, tc)
+{
+	struct conf_ctx ctx;
+	FILE *fp = fmemopen(STR_SIZE("01234567890"), "r");
+	conf_parse(&ctx, tc4_parser, fp, NULL);
+}
+
 ATF_TP_ADD_TCS(tp)
 {
 	ATF_TP_ADD_TC(tp, tc0);
 	ATF_TP_ADD_TC(tp, tc1);
 	ATF_TP_ADD_TC(tp, tc2);
 	ATF_TP_ADD_TC(tp, tc3);
+	ATF_TP_ADD_TC(tp, tc4);
 	return atf_no_error();
 }

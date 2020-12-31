@@ -62,6 +62,8 @@ conf_string(struct conf_ctx *ctx, char *buf, size_t size)
 	while (true) {
 		if ((ctx->buf_index + n) >= ctx->buf_size)
 			break;
+		if ((n+1) == size)
+			break;
 		if (ctx->buf[ctx->buf_index + n] == ' ' || ctx->buf[ctx->buf_index + n] == '\t' || ctx->buf[ctx->buf_index + n] == '\n')
 			break;
 		n++;

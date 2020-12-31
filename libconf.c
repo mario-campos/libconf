@@ -37,9 +37,9 @@ conf_next(struct conf_ctx *ctx, const char *s)
 size_t
 conf_expect(struct conf_ctx *ctx, const char *s)
 {
-	for (char *s = &ctx->buf[0]; *s == ' ' || *s == '\t'; s++);
-	if (!conf_next(ctx, s))
+	if (strncmp(&ctx->buf[ctx->buf_index], s, strlen(s)))
 		longjmp(ctx->jump, 1);
+
 	ctx->buf_index += strlen(s);
 	return strlen(s);
 }

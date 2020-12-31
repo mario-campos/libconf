@@ -7,3 +7,4 @@ atf_test_program{name='test_conf_accept'}
 atf_test_program{name='test_conf_eof'}
 atf_test_program{name='test_conf_expect'}
 atf_test_program{name='test_conf_string'}
+atf_test_program{name='test_conf_parse'}

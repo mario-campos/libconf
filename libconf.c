@@ -20,6 +20,7 @@ conf_parse(struct conf_ctx *ctx, conf_parser_t func, FILE *fp, void *arg)
 	ctx->buf_size = fread(ctx->buf, sizeof(char), sizeof(ctx->buf), fp);
 	ctx->buf_index = 0;
 	func(ctx, arg);
+	return true;
 }
 
 bool

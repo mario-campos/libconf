@@ -1,3 +1,5 @@
 tests/test_conf_next
 tests/test_conf_accept
 tests/test_conf_eof
+tests/test_conf_expect
+tests/test_conf_string

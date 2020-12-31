@@ -57,15 +57,24 @@ conf_accept(struct conf_ctx *ctx, const char *s)
 size_t
 conf_string(struct conf_ctx *ctx, char *buf, size_t size)
 {
-	size_t index = ctx->buf_index;
+	// 1. determine the range of bytes to copy
+	size_t n = 0;
 	while (true) {
-		char c = ctx->buf[index];
-		if (c != ' ' && c != '\t' && c != '\n')
-			index++;
-		else
+		if ((ctx->buf_index + n) >= ctx->buf_size)
 			break;
+		if (ctx->buf[ctx->buf_index + n] == ' ' || ctx->buf[ctx->buf_index + n] == '\t' || ctx->buf[ctx->buf_index + n] == '\n')
+			break;
+		n++;
 	}
-	size_t diff = index - ctx->buf_index;
-	ctx->buf_index = index;
-	return diff;
+
+	// 2. copy those bytes
+	memcpy(buf, &ctx->buf[ctx->buf_index], n);
+
+	// 3. set null terminator
+	buf[n] = '\0';
+
+	// 4. update internal pointer
+	ctx->buf_index += n;
+
+	return n;
 }

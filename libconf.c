@@ -12,7 +12,7 @@ conf_init(struct conf_ctx *ctx)
 }
 
 bool
-conf_parse(struct conf_ctx *ctx, conf_parser_t func, FILE *fp, void *arg)
+conf_parse(struct conf_ctx *ctx, void (*func)(struct conf_ctx *, void *), FILE *fp, void *arg)
 {
 	if (setjmp(ctx->jump) > 0)
 		return false;

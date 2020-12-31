@@ -20,10 +20,8 @@ struct conf_ctx {
 	const char *err_text;
 };
 
-typedef void (*conf_parser_t)(struct conf_ctx *ctx, void *arg);
-
 void conf_init(struct conf_ctx *);
-bool conf_parse(struct conf_ctx *, conf_parser_t, FILE *, void *);
+bool conf_parse(struct conf_ctx *, void (*)(struct conf_ctx *, void *), FILE *, void *);
 
 bool conf_eof(struct conf_ctx *);
 bool conf_next(struct conf_ctx *, const char *);

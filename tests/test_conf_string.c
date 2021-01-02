@@ -60,7 +60,7 @@ ATF_TC_WITHOUT_HEAD(tc5);
 ATF_TC_BODY(tc5, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("  \t \n\tfoo"), "r");
+	FILE *fp = fmemopen(STR_SIZE("  \t \t\tfoo"), "r");
 	conf_parse(&cst, tc0_parser, fp, NULL);
 }
 
@@ -68,7 +68,7 @@ ATF_TC_WITHOUT_HEAD(tc6);
 ATF_TC_BODY(tc6, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("  \t \n\tfoo "), "r");
+	FILE *fp = fmemopen(STR_SIZE("  \t \t\tfoo "), "r");
 	conf_parse(&cst, tc0_parser, fp, NULL);
 }
 
@@ -76,7 +76,7 @@ ATF_TC_WITHOUT_HEAD(tc7);
 ATF_TC_BODY(tc7, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("  \t \n\tfoo\t"), "r");
+	FILE *fp = fmemopen(STR_SIZE("  \t \t\tfoo\t"), "r");
 	conf_parse(&cst, tc0_parser, fp, NULL);
 }
 
@@ -84,7 +84,7 @@ ATF_TC_WITHOUT_HEAD(tc8);
 ATF_TC_BODY(tc8, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("  \t \n\tfoo\n"), "r");
+	FILE *fp = fmemopen(STR_SIZE("  \t \t\tfoo\n"), "r");
 	conf_parse(&cst, tc0_parser, fp, NULL);
 }
 
@@ -92,7 +92,7 @@ ATF_TC_WITHOUT_HEAD(tc9);
 ATF_TC_BODY(tc9, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("  \t \n\t01234567890"), "r");
+	FILE *fp = fmemopen(STR_SIZE("  \t \t\t01234567890"), "r");
 	conf_parse(&cst, tc4_parser, fp, NULL);
 }
 

@@ -70,19 +70,6 @@ ATF_TC_BODY(tc4, tc)
 	FILE *fp = fmemopen(STR_SIZE("\t\txxx"), "r");
 	ATF_CHECK(conf_parse(&cst, tc4_parser, fp, NULL));
 }
- 
-void tc5_parser(struct conf_state *cst, void *arg)
-{
-	ATF_CHECK_EQ(conf_expect(cst, "xxx"), 3);
-}
-
-ATF_TC_WITHOUT_HEAD(tc5);
-ATF_TC_BODY(tc5, tc)
-{
-	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("\n\n\nxxx"), "r");
-	ATF_CHECK(conf_parse(&cst, tc5_parser, fp, NULL));
-}
 
 ATF_TP_ADD_TCS(tp)
 {
@@ -91,6 +78,5 @@ ATF_TP_ADD_TCS(tp)
 	ATF_TP_ADD_TC(tp, tc2);
 	ATF_TP_ADD_TC(tp, tc3);
 	ATF_TP_ADD_TC(tp, tc4);
-	ATF_TP_ADD_TC(tp, tc5);
 	return atf_no_error();
 }

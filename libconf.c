@@ -38,6 +38,15 @@ conf_eof(struct conf_state *cst)
 		if (cst->buf[cst->buf_index] == ' '
 		 || cst->buf[cst->buf_index] == '\t')
 			cst->buf_index++;
+		else if (cst->buf[cst->buf_index] == '#') {
+			while (true) {
+				if (cst->buf[cst->buf_index] == '\n')
+					break;
+				if (cst->buf_index == cst->buf_size)
+					break;
+				cst->buf_index++;
+			}
+		}
 		else break;
 	}
 
@@ -51,6 +60,15 @@ conf_next(struct conf_state *cst, const char *s)
 		if (cst->buf[cst->buf_index] == ' '
 		 || cst->buf[cst->buf_index] == '\t')
 			cst->buf_index++;
+		else if (cst->buf[cst->buf_index] == '#') {
+			while (true) {
+				if (cst->buf[cst->buf_index] == '\n')
+					break;
+				if (cst->buf_index == cst->buf_size)
+					break;
+				cst->buf_index++;
+			}
+		}
 		else break;
 	}
 
@@ -64,6 +82,15 @@ conf_expect(struct conf_state *cst, const char *s)
 		if (cst->buf[cst->buf_index] == ' '
 		 || cst->buf[cst->buf_index] == '\t')
 			cst->buf_index++;
+		else if (cst->buf[cst->buf_index] == '#') {
+			while (true) {
+				if (cst->buf[cst->buf_index] == '\n')
+					break;
+				if (cst->buf_index == cst->buf_size)
+					break;
+				cst->buf_index++;
+			}
+		}
 		else break;
 	}
 
@@ -81,6 +108,15 @@ conf_accept(struct conf_state *cst, const char *s)
 		if (cst->buf[cst->buf_index] == ' '
 		 || cst->buf[cst->buf_index] == '\t')
 			cst->buf_index++;
+		else if (cst->buf[cst->buf_index] == '#') {
+			while (true) {
+				if (cst->buf[cst->buf_index] == '\n')
+					break;
+				if (cst->buf_index == cst->buf_size)
+					break;
+				cst->buf_index++;
+			}
+		}
 		else break;
 	}
 

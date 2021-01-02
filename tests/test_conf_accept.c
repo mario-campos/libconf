@@ -69,6 +69,32 @@ ATF_TC_BODY(tc4, tc)
 	conf_parse(&cst, tc4_parser, fp, NULL);
 }
 
+void tc5_parser(struct conf_state *cst, void *arg)
+{
+	ATF_CHECK_EQ(conf_accept(cst, "\nzyx"), 4);
+}
+
+ATF_TC_WITHOUT_HEAD(tc5);
+ATF_TC_BODY(tc5, tc)
+{
+	struct conf_state cst;
+	FILE *fp = fmemopen(STR_SIZE("# comment\nzyx"), "r");
+	conf_parse(&cst, tc5_parser, fp, NULL);
+}
+
+void tc6_parser(struct conf_state *cst, void *arg)
+{
+	ATF_CHECK_EQ(conf_accept(cst, "\nzyx"), 4);
+}
+
+ATF_TC_WITHOUT_HEAD(tc6);
+ATF_TC_BODY(tc6, tc)
+{
+	struct conf_state cst;
+	FILE *fp = fmemopen(STR_SIZE("  \t \t\t# comment\nzyx"), "r");
+	conf_parse(&cst, tc6_parser, fp, NULL);
+}
+
 ATF_TP_ADD_TCS(tp)
 {
 	ATF_TP_ADD_TC(tp, tc0);
@@ -76,5 +102,7 @@ ATF_TP_ADD_TCS(tp)
 	ATF_TP_ADD_TC(tp, tc2);
 	ATF_TP_ADD_TC(tp, tc3);
 	ATF_TP_ADD_TC(tp, tc4);
+	ATF_TP_ADD_TC(tp, tc5);
+	ATF_TP_ADD_TC(tp, tc6);
 	return atf_no_error();
 }

@@ -13,8 +13,7 @@ ATF_TC_WITHOUT_HEAD(tc0);
 ATF_TC_BODY(tc0, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("foo"), "r");
-	conf_parse(&cst, tc0_parser, fp, NULL);
+	conf_parse(&cst, tc0_parser, fmemopen(STR_SIZE("foo"), "r"), NULL);
 }
 
 void tc1_parser(struct conf_state *cst, void *arg)
@@ -26,8 +25,7 @@ ATF_TC_WITHOUT_HEAD(tc1);
 ATF_TC_BODY(tc1, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("foo"), "r");
-	conf_parse(&cst, tc1_parser, fp, NULL);
+	conf_parse(&cst, tc1_parser, fmemopen(STR_SIZE("foo"), "r"), NULL);
 }
 
 void tc2_parser(struct conf_state *cst, void *arg)
@@ -39,8 +37,7 @@ ATF_TC_WITHOUT_HEAD(tc2);
 ATF_TC_BODY(tc2, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE(" "), "r");
-	conf_parse(&cst, tc2_parser, fp, NULL);
+	conf_parse(&cst, tc2_parser, fmemopen(STR_SIZE(" "), "r"), NULL);
 }
 
 void tc3_parser(struct conf_state *cst, void *arg)
@@ -52,8 +49,7 @@ ATF_TC_WITHOUT_HEAD(tc3);
 ATF_TC_BODY(tc3, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("\t\t\t"), "r");
-	conf_parse(&cst, tc3_parser, fp, NULL);
+	conf_parse(&cst, tc3_parser, fmemopen(STR_SIZE("\t\t\t"), "r"), NULL);
 }
 
 void tc4_parser(struct conf_state *cst, void *arg)
@@ -65,8 +61,7 @@ ATF_TC_WITHOUT_HEAD(tc4);
 ATF_TC_BODY(tc4, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("# comment"), "r");
-	conf_parse(&cst, tc4_parser, fp, NULL);
+	conf_parse(&cst, tc4_parser, fmemopen(STR_SIZE("# comment"), "r"), NULL);
 }
 
 void tc5_parser(struct conf_state *cst, void *arg)
@@ -78,8 +73,7 @@ ATF_TC_WITHOUT_HEAD(tc5);
 ATF_TC_BODY(tc5, tc)
 {
 	struct conf_state cst;
-	FILE *fp = fmemopen(STR_SIZE("  \t \t\t# comment"), "r");
-	conf_parse(&cst, tc5_parser, fp, NULL);
+	conf_parse(&cst, tc5_parser, fmemopen(STR_SIZE("  \t \t\t# comment"), "r"), NULL);
 }
 
 

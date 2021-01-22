@@ -1,6 +1,5 @@
 #include <setjmp.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
 
 #include "libconf.h"
@@ -74,7 +73,6 @@ conf_next(struct conf_state *cst, char buf[], size_t buf_size)
 
 	size_t n = 0;
 	while (true) {
-		printf("conf_next: n=%lu '%c'\n", n, cst->buf[n]);
 		if (cst->buf[cst->buf_index + n] == ' ' || cst->buf[cst->buf_index + n] == '\t' || cst->buf[cst->buf_index + n] == '\n')
 			break;
 		if (n == (buf_size-1))

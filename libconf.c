@@ -53,8 +53,8 @@ conf_eof(struct conf_state *cst)
 	return feof(cst->file) && cst->buf_index == cst->buf_size;
 }
 
-bool
-conf_next(struct conf_state *cst, const char *s)
+size_t
+conf_next(struct conf_state *cst, char buf[], size_t buf_size)
 {
 	while (true) {
 		if (cst->buf[cst->buf_index] == ' '
@@ -72,7 +72,18 @@ conf_next(struct conf_state *cst, const char *s)
 		else break;
 	}
 
-	return !strncmp(&cst->buf[cst->buf_index], s, strlen(s));
+	size_t n = 0;
+	while (true) {
+		printf("conf_next: n=%lu '%c'\n", n, cst->buf[n]);
+		if (cst->buf[cst->buf_index + n] == ' ' || cst->buf[cst->buf_index + n] == '\t' || cst->buf[cst->buf_index + n] == '\n')
+			break;
+		if (n == (buf_size-1))
+			break;
+		n++;
+	}
+	strncpy(buf, &cst->buf[cst->buf_index], n);
+	buf[n] = '\0';
+	return n;
 }
 
 size_t

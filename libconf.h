@@ -20,14 +20,14 @@ struct conf_state {
 	const char *err_text;
 };
 
-void conf_init(struct conf_state *);
-bool conf_parse(struct conf_state *, void (*)(struct conf_state *, void *), FILE *, void *);
+void	conf_init(struct conf_state *);
+bool	conf_parse(struct conf_state *, void (*)(struct conf_state *, void *), FILE *, void *);
 
-bool conf_eof(struct conf_state *);
-bool conf_next(struct conf_state *, const char *);
-void conf_error(struct conf_state *, int, const char *);
-size_t conf_expect(struct conf_state *, const char *);
-size_t conf_accept(struct conf_state *, const char *);
-size_t conf_string(struct conf_state *, char *, size_t);
+bool	conf_eof(struct conf_state *);
+void	conf_error(struct conf_state *, int, const char *);
+size_t	conf_next(struct conf_state *, char[], size_t);
+size_t	conf_expect(struct conf_state *, const char *);
+size_t	conf_accept(struct conf_state *, const char *);
+size_t	conf_string(struct conf_state *, char[], size_t);
 
 #endif /* LIBCONF_H */

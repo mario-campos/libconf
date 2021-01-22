@@ -79,8 +79,7 @@ conf_next(struct conf_state *cst, char buf[], size_t buf_size)
 			break;
 		n++;
 	}
-	strncpy(buf, &cst->buf[cst->buf_index], n);
-	buf[n] = '\0';
+	strlcpy(buf, &cst->buf[cst->buf_index], (n+1) < buf_size ? (n+1) : buf_size);
 	return n;
 }
 
@@ -159,13 +158,7 @@ conf_string(struct conf_state *cst, char *buf, size_t size)
 		n++;
 	}
 
-	// 2. copy those bytes
-	memcpy(buf, &cst->buf[cst->buf_index], n);
-
-	// 3. set null terminator
-	buf[n] = '\0';
-
-	// 4. update internal pointer
+	strlcpy(buf, &cst->buf[cst->buf_index], (n+1) < size ? (n+1) : size);
 	cst->buf_index += n;
 
 	return n;

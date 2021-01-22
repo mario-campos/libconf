@@ -1,3 +1,6 @@
 image: openbsd/latest
+packages:
+- atf
+- kyua-cli
 tasks:
 - test: cd tests && make test

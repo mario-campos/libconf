@@ -53,6 +53,7 @@ conf_error(struct conf_state *cst, int error_code, const char *message)
 bool
 conf_eof(struct conf_state *cst)
 {
+	skip_whitespace_and_comments(cst);
 	return feof(cst->file) && cst->buf_index == cst->buf_size;
 }
 

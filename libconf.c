@@ -138,7 +138,6 @@ conf_accept(struct conf_state *cst, const char *s)
 size_t
 conf_string(struct conf_state *cst, char *buf, size_t size)
 {
-	// 0. ignore whitespace
 	while (true) {
 		if (cst->buf[cst->buf_index] == ' '
 		 || cst->buf[cst->buf_index] == '\t')
@@ -146,20 +145,28 @@ conf_string(struct conf_state *cst, char *buf, size_t size)
 		else break;
 	}
 
-	// 1. determine the range of bytes to copy
+	bool in_double_quote = false;
 	size_t n = 0;
 	while (true) {
 		if ((cst->buf_index + n) >= cst->buf_size)
 			break;
 		if ((n+1) == size)
 			break;
-		if (cst->buf[cst->buf_index + n] == ' ' || cst->buf[cst->buf_index + n] == '\t' || cst->buf[cst->buf_index + n] == '\n')
+		if (in_double_quote && cst->buf[cst->buf_index + n] == '"')
+			break;
+		if (!in_double_quote && cst->buf[cst->buf_index + n] == '"') {
+			in_double_quote = true;
+			cst->buf_index++;
+		}
+		if (!in_double_quote && cst->buf[cst->buf_index + n] == ' ' || cst->buf[cst->buf_index + n] == '\t')
+			break;
+		if (cst->buf[cst->buf_index + n] == '\n')
 			break;
 		n++;
 	}
 
 	strlcpy(buf, &cst->buf[cst->buf_index], (n+1) < size ? (n+1) : size);
-	cst->buf_index += n;
+	cst->buf_index += n + in_double_quote;
 
 	return n;
 }

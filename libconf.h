@@ -30,4 +30,6 @@ size_t	conf_expect(struct conf_state *, const char *);
 size_t	conf_accept(struct conf_state *, const char *);
 size_t	conf_string(struct conf_state *, char[], size_t);
 
+const char *conf_strerror(struct conf_state *);
+
 #endif /* LIBCONF_H */

@@ -42,6 +42,14 @@ conf_parse(struct conf_state *cst, void (*func)(struct conf_state *, void *), FI
 	return true;
 }
 
+const char *
+conf_strerror(struct conf_state *cst)
+{
+	static char err_msg_buf[100] = {0};
+	strlcpy(err_msg_buf, cst->err_text, sizeof(err_msg_buf));
+	return err_msg_buf;
+}
+
 void
 conf_error(struct conf_state *cst, int error_code, const char *message)
 {
@@ -80,7 +88,7 @@ conf_expect(struct conf_state *cst, const char *s)
 	skip_whitespace_and_comments(cst);
 
 	if (strncmp(&cst->buf[cst->buf_index], s, strlen(s)))
-		longjmp(cst->jump, 1);
+		conf_error(cst, LIBCONF_ERR_UNEXPECTED_TOKEN, "unexpected token");
 
 	cst->buf_index += strlen(s);
 	return strlen(s);

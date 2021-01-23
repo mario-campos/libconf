@@ -4,6 +4,26 @@
 
 #include "libconf.h"
 
+static void
+skip_whitespace_and_comments(struct conf_state *cst)
+{
+	while (true) {
+		if (cst->buf[cst->buf_index] == ' '
+		 || cst->buf[cst->buf_index] == '\t')
+			cst->buf_index++;
+		else if (cst->buf[cst->buf_index] == '#') {
+			while (true) {
+				if (cst->buf[cst->buf_index] == '\n')
+					break;
+				if (cst->buf_index == cst->buf_size)
+					break;
+				cst->buf_index++;
+			}
+		}
+		else break;
+	}
+}
+
 void
 conf_init(struct conf_state *cst)
 {
@@ -33,43 +53,13 @@ conf_error(struct conf_state *cst, int error_code, const char *message)
 bool
 conf_eof(struct conf_state *cst)
 {
-	while (true) {
-		if (cst->buf[cst->buf_index] == ' '
-		 || cst->buf[cst->buf_index] == '\t')
-			cst->buf_index++;
-		else if (cst->buf[cst->buf_index] == '#') {
-			while (true) {
-				if (cst->buf[cst->buf_index] == '\n')
-					break;
-				if (cst->buf_index == cst->buf_size)
-					break;
-				cst->buf_index++;
-			}
-		}
-		else break;
-	}
-
 	return feof(cst->file) && cst->buf_index == cst->buf_size;
 }
 
 size_t
 conf_next(struct conf_state *cst, char buf[], size_t buf_size)
 {
-	while (true) {
-		if (cst->buf[cst->buf_index] == ' '
-		 || cst->buf[cst->buf_index] == '\t')
-			cst->buf_index++;
-		else if (cst->buf[cst->buf_index] == '#') {
-			while (true) {
-				if (cst->buf[cst->buf_index] == '\n')
-					break;
-				if (cst->buf_index == cst->buf_size)
-					break;
-				cst->buf_index++;
-			}
-		}
-		else break;
-	}
+	skip_whitespace_and_comments(cst);
 
 	size_t n = 0;
 	while (true) {
@@ -86,21 +76,7 @@ conf_next(struct conf_state *cst, char buf[], size_t buf_size)
 size_t
 conf_expect(struct conf_state *cst, const char *s)
 {
-	while (true) {
-		if (cst->buf[cst->buf_index] == ' '
-		 || cst->buf[cst->buf_index] == '\t')
-			cst->buf_index++;
-		else if (cst->buf[cst->buf_index] == '#') {
-			while (true) {
-				if (cst->buf[cst->buf_index] == '\n')
-					break;
-				if (cst->buf_index == cst->buf_size)
-					break;
-				cst->buf_index++;
-			}
-		}
-		else break;
-	}
+	skip_whitespace_and_comments(cst);
 
 	if (strncmp(&cst->buf[cst->buf_index], s, strlen(s)))
 		longjmp(cst->jump, 1);
@@ -112,21 +88,7 @@ conf_expect(struct conf_state *cst, const char *s)
 size_t
 conf_accept(struct conf_state *cst, const char *s)
 {
-	while (true) {
-		if (cst->buf[cst->buf_index] == ' '
-		 || cst->buf[cst->buf_index] == '\t')
-			cst->buf_index++;
-		else if (cst->buf[cst->buf_index] == '#') {
-			while (true) {
-				if (cst->buf[cst->buf_index] == '\n')
-					break;
-				if (cst->buf_index == cst->buf_size)
-					break;
-				cst->buf_index++;
-			}
-		}
-		else break;
-	}
+	skip_whitespace_and_comments(cst);
 
 	if (strncmp(&cst->buf[cst->buf_index], s, strlen(s)))
 		return 0;
@@ -138,12 +100,7 @@ conf_accept(struct conf_state *cst, const char *s)
 size_t
 conf_string(struct conf_state *cst, char *buf, size_t size)
 {
-	while (true) {
-		if (cst->buf[cst->buf_index] == ' '
-		 || cst->buf[cst->buf_index] == '\t')
-			cst->buf_index++;
-		else break;
-	}
+	skip_whitespace_and_comments(cst);
 
 	bool in_double_quote = false;
 	size_t n = 0;

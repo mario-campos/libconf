@@ -1,6 +1,7 @@
 #include <setjmp.h>
 #include <stdbool.h>
 #include <string.h>
+#include <regex.h>
 
 #include "libconf.h"
 
@@ -135,4 +136,64 @@ conf_string(struct conf_state *cst, char *buf, size_t size)
 	cst->buf_index += n + in_double_quote;
 
 	return n;
+}
+
+size_t
+conf_expect_re(struct conf_state *cst, const char *pattern)
+{
+	skip_whitespace_and_comments(cst);
+
+	int re_err;
+	regex_t re;
+	regmatch_t re_loc[1];
+
+	if (regcomp(&re, pattern, REG_EXTENDED)) {
+		char message[100];
+		regerror(re_err, &re, message, sizeof(message));
+		char *err_msg = strdup(message);
+		conf_error(cst, LIBCONF_ERR_REGEX, err_msg);
+	}
+
+	if ((re_err = regexec(&re, &cst->buf[cst->buf_index], 1, re_loc, 0))) {
+		char message[100];
+		regerror(re_err, &re, message, sizeof(message));
+		char *err_msg = strdup(message);
+		conf_error(cst, LIBCONF_ERR_REGEX, err_msg);
+	}
+
+	if (re_loc[0].rm_so != 0)
+		conf_error(cst, LIBCONF_ERR_UNEXPECTED_TOKEN, strdup("unexpected token"));
+
+	cst->buf_index += re_loc[0].rm_eo;
+	return re_loc[0].rm_eo;
+}
+
+size_t
+conf_accept_re(struct conf_state *cst, const char *pattern)
+{
+	skip_whitespace_and_comments(cst);
+
+	int re_err;
+	regex_t re;
+	regmatch_t re_loc[1];
+
+	if (regcomp(&re, pattern, REG_EXTENDED)) {
+		char message[100];
+		regerror(re_err, &re, message, sizeof(message));
+		char *err_msg = strdup(message);
+		conf_error(cst, LIBCONF_ERR_REGEX, err_msg);
+	}
+
+	re_err = regexec(&re, &cst->buf[cst->buf_index], 1, re_loc, 0);
+	if (re_err == REG_NOMATCH || re_loc[0].rm_so != 0)
+		return 0;
+	else if (re_err) {
+		char message[100];
+		regerror(re_err, &re, message, sizeof(message));
+		char *err_msg = strdup(message);
+		conf_error(cst, LIBCONF_ERR_REGEX, err_msg);
+	}
+
+	cst->buf_index += re_loc[0].rm_eo;
+	return re_loc[0].rm_eo;
 }

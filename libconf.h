@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define LIBCONF_SUCCESS 		0x0001
-#define LIBCONF_ERR_EOF			0x0002
+#define LIBCONF_SUCCESS 		0x0000
+#define LIBCONF_ERR_EOF			0x0001
 #define LIBCONF_ERR_UNEXPECTED_TOKEN 	0x0002
 #define LIBCONF_ERR_READ		0x0003
 

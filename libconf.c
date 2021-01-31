@@ -91,6 +91,8 @@ conf_expect(struct conf_state *cst, const char *s)
 	if (strncmp(&cst->buf[cst->buf_index], s, strlen(s)))
 		conf_error(cst, LIBCONF_ERR_UNEXPECTED_TOKEN, "unexpected token");
 
+	cst->prev = cst->buf + cst->buf_index;
+	cst->prevsize = strlen(s);
 	cst->buf_index += strlen(s);
 	return strlen(s);
 }
@@ -103,6 +105,8 @@ conf_accept(struct conf_state *cst, const char *s)
 	if (strncmp(&cst->buf[cst->buf_index], s, strlen(s)))
 		return 0;
 
+	cst->prev = cst->buf + cst->buf_index;
+	cst->prevsize = strlen(s);
 	cst->buf_index += strlen(s);
 	return strlen(s);
 }
@@ -164,6 +168,8 @@ conf_expect_re(struct conf_state *cst, const char *pattern)
 	if (re_loc[0].rm_so != 0)
 		conf_error(cst, LIBCONF_ERR_UNEXPECTED_TOKEN, strdup("unexpected token"));
 
+	cst->prev = cst->buf + cst->buf_index;
+	cst->prevsize = re_loc[0].rm_eo;
 	cst->buf_index += re_loc[0].rm_eo;
 	return re_loc[0].rm_eo;
 }
@@ -194,6 +200,20 @@ conf_accept_re(struct conf_state *cst, const char *pattern)
 		conf_error(cst, LIBCONF_ERR_REGEX, err_msg);
 	}
 
+	cst->prev = cst->buf + cst->buf_index;
+	cst->prevsize = re_loc[0].rm_eo;
 	cst->buf_index += re_loc[0].rm_eo;
 	return re_loc[0].rm_eo;
+}
+
+size_t
+conf_copy(struct conf_state *cst, char buf[], size_t buflen)
+{
+	return strlcpy(buf, cst->prev, (cst->prevsize + 1) < buflen ? (cst->prevsize + 1) : buflen);
+}
+
+const char *
+conf_copydup(struct conf_state *cst)
+{
+	return strndup(cst->prev, cst->prevsize);
 }

@@ -19,6 +19,8 @@ struct conf_state {
 	size_t buf_size;
 	int err_code;
 	const char *err_text;
+	const char *prev;
+	size_t prevsize;
 };
 
 void	conf_init(struct conf_state *);
@@ -32,6 +34,8 @@ size_t	conf_accept(struct conf_state *, const char *);
 size_t	conf_string(struct conf_state *, char[], size_t);
 size_t	conf_expect_re(struct conf_state *, const char *);
 size_t	conf_accept_re(struct conf_state *, const char *);
+size_t	conf_copy(struct conf_state *, char[], size_t);
+const char *conf_copydup(struct conf_state *);
 
 const char *conf_strerror(struct conf_state *);
 

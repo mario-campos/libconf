@@ -6,13 +6,10 @@
 #include "libconf.h"
 
 static void
-skip_whitespace_and_comments(struct conf_state *cst)
+skip_comments(struct conf_state *cst)
 {
 	while (true) {
-		if (cst->buf[cst->buf_index] == ' '
-		 || cst->buf[cst->buf_index] == '\t')
-			cst->buf_index++;
-		else if (cst->buf[cst->buf_index] == '#') {
+		if (cst->buf[cst->buf_index] == '#') {
 			while (true) {
 				if (cst->buf[cst->buf_index] == '\n')
 					break;
@@ -62,14 +59,14 @@ conf_error(struct conf_state *cst, int error_code, const char *message)
 bool
 conf_eof(struct conf_state *cst)
 {
-	skip_whitespace_and_comments(cst);
+	skip_comments(cst);
 	return feof(cst->file) && cst->buf_index == cst->buf_size;
 }
 
 size_t
 conf_next(struct conf_state *cst, char buf[], size_t buf_size)
 {
-	skip_whitespace_and_comments(cst);
+	skip_comments(cst);
 
 	size_t n = 0;
 	while (true) {
@@ -86,7 +83,7 @@ conf_next(struct conf_state *cst, char buf[], size_t buf_size)
 size_t
 conf_expect(struct conf_state *cst, const char *s)
 {
-	skip_whitespace_and_comments(cst);
+	skip_comments(cst);
 
 	if (strncmp(&cst->buf[cst->buf_index], s, strlen(s)))
 		conf_error(cst, LIBCONF_ERR_UNEXPECTED_TOKEN, "unexpected token");
@@ -100,7 +97,7 @@ conf_expect(struct conf_state *cst, const char *s)
 size_t
 conf_accept(struct conf_state *cst, const char *s)
 {
-	skip_whitespace_and_comments(cst);
+	skip_comments(cst);
 
 	if (strncmp(&cst->buf[cst->buf_index], s, strlen(s)))
 		return 0;
@@ -114,7 +111,7 @@ conf_accept(struct conf_state *cst, const char *s)
 size_t
 conf_string(struct conf_state *cst, char *buf, size_t size)
 {
-	skip_whitespace_and_comments(cst);
+	skip_comments(cst);
 
 	bool in_double_quote = false;
 	size_t n = 0;
@@ -145,7 +142,7 @@ conf_string(struct conf_state *cst, char *buf, size_t size)
 size_t
 conf_expect_re(struct conf_state *cst, const char *pattern)
 {
-	skip_whitespace_and_comments(cst);
+	skip_comments(cst);
 
 	int re_err;
 	regex_t re;
@@ -177,7 +174,7 @@ conf_expect_re(struct conf_state *cst, const char *pattern)
 size_t
 conf_accept_re(struct conf_state *cst, const char *pattern)
 {
-	skip_whitespace_and_comments(cst);
+	skip_comments(cst);
 
 	int re_err;
 	regex_t re;
